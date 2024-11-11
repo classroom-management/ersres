@@ -71,6 +71,35 @@
         let StartUnityInstance;
         let myGameInstance;
         let ysdk = null; // Yandex SDK pasif
+        
+        // Varsayılan environmentData tanımı
+        let environmentData = {
+            language: "en",
+            domain: "default_domain",
+            deviceType: "desktop",
+            isMobile: false,
+            isDesktop: true,
+            isTablet: false,
+            isTV: false,
+            appID: "default_app_id",
+            browserLang: navigator.language || "en",
+            payload: null,
+            promptCanShow: false,
+            reviewCanShow: false,
+            platform: navigator.platform,
+            browser: (function() {
+                let userAgent = navigator.userAgent;
+                if (userAgent.includes("YaBrowser")) return "Yandex";
+                if (userAgent.includes("OPR") || userAgent.includes("Opera")) return "Opera";
+                if (userAgent.includes("Firefox")) return "Firefox";
+                if (userAgent.includes("MSIE") || userAgent.includes("Trident")) return "IE";
+                if (userAgent.includes("Edge")) return "Edge";
+                if (userAgent.includes("Chrome")) return "Chrome";
+                if (userAgent.includes("Safari")) return "Safari";
+                return "Other";
+            })()
+        };
+
         let player = null;
         let payments = null;
         let initGame = false;
