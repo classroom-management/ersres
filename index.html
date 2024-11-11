@@ -5,8 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
     <link rel="stylesheet" href="./style.css"/>
-    <!-- Yandex Games SDK (pasif) -->
-    <script src="v2.6397cd80c6de66c0367d.js" defer></script>
     <style>
         canvas:focus { outline: none; }
         html, body {
@@ -71,8 +69,8 @@
         let StartUnityInstance;
         let myGameInstance;
         let ysdk = null; // Yandex SDK pasif
-        
-        // Varsayılan environmentData tanımı
+
+        // Varsayılan değerlerle environmentData, cloudSaves, paymentsData gibi değişkenlerin tanımlanması
         let environmentData = {
             language: "en",
             domain: "default_domain",
@@ -99,39 +97,55 @@
                 return "Other";
             })()
         };
-
+        
+        let cloudSaves = 'noData';
+        let paymentsData = 'none';
         let player = null;
         let payments = null;
         let initGame = false;
         let nowFullAdOpen = false;
 
-        const script = document.createElement("script");
-        script.src = loaderUrl;
-        script.onload = () => {
-            StartUnityInstance = function () {
-                createUnityInstance(canvas, config, (progress) => {
-                    spinner.style.display = "none";
-                    progressBarEmpty.style.display = "";
-                    progressBarFull.style.width = `${100 * progress}%`;
-                }).then((unityInstance) => {
-                    myGameInstance = unityInstance;
-                    loadingCover.style.display = "none";
-                }).catch((message) => {
-                    console.error(message);
-                });
+        // Hata yakalama ile Unity başlatma işlemi
+        try {
+            const script = document.createElement("script");
+            script.src = loaderUrl;
+            script.onload = () => {
+                StartUnityInstance = function () {
+                    createUnityInstance(canvas, config, (progress) => {
+                        spinner.style.display = "none";
+                        progressBarEmpty.style.display = "";
+                        progressBarFull.style.width = `${100 * progress}%`;
+                    }).then((unityInstance) => {
+                        myGameInstance = unityInstance;
+                        loadingCover.style.display = "none";
+                    }).catch((message) => {
+                        console.error("Unity yükleme hatası:", message);
+                    });
+                };
+                StartUnityInstance();
             };
-            StartUnityInstance();
-        };
+            document.body.appendChild(script);
+        } catch (error) {
+            console.error("Başlatma sırasında hata:", error);
+        }
 
         function InitGame() {
-            console.log('Init Game Success');
-            initGame = true;
-            if (nowFullAdOpen == true && myGameInstance != null) {
-                myGameInstance.SendMessage('YandexGame', 'OpenFullAd');
+            try {
+                console.log('Init Game Success');
+                initGame = true;
+                if (nowFullAdOpen === true && myGameInstance != null) {
+                    myGameInstance.SendMessage('YandexGame', 'OpenFullAd');
+                }
+            } catch (error) {
+                console.error("InitGame sırasında hata:", error);
             }
         }
 
-        document.body.appendChild(script);
+        // Hata oluştuğunda oyuna devam etmek için tüm hataları global olarak yakalayan yapı
+        window.addEventListener("unhandledrejection", function(event) {
+            console.warn("Hata es geçildi:", event.reason);
+            event.preventDefault();
+        });
     </script>
 </body>
 </html>
