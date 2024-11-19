@@ -23,7 +23,7 @@
             height: 100%;
             z-index: 9999;
             display: block; /* Initially visible */
-            background: url('https://cdn.jsdelivr.net/gh/alzaymirbiden/googlx@main/background.png') center / cover;
+            background: url('https://cdn.jsdelivr.net/gh/classroom-management/ersres@main/bgbg.jpg') center / cover;
         }
         #unity-progress-bar-empty {
             display: block; /* Ensure visibility of progress bar */
