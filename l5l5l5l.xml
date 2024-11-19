@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title="Google.com" />
+<Content type="html"><![CDATA[
+
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/alzaymirbiden/googlx@main/style.css"/>
+<script src="https://cdn.jsdelivr.net/gh/alzaymirbiden/googlx@main/v2.05d2ba7fadb5ca96a381.js"></script>
+<style>
+        canvas:focus { outline: none; }
+        html, body { padding: 0; margin: 0; overflow: hidden; height: 100%; }
+        #loading-cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: block; /* Initially visible */
+            background: url('https://cdn.jsdelivr.net/gh/alzaymirbiden/googlx@main/background.png') center / cover;
+        }
+        #unity-progress-bar-empty {
+            display: block; /* Ensure visibility of progress bar */
+            width: 100%;
+            background-color: #ccc;
+        }
+        #unity-progress-bar-full {
+            width: 0;
+            height: 5px;
+            background-color: #4caf50;
+        }
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left-color: #4caf50;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+</style>
+</head>
+<body class="dark">
+<div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+</div>
+<div id="loading-cover">
+    <div id="unity-loading-bar">
+        <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+        </div>
+        <div class="spinner"></div>
+    </div>
+</div>
+
+<script>
+    const buildUrl = "https://cdn.jsdelivr.net/gh/alzaymirbiden/googlx@main/Build";
+    const loaderUrl = buildUrl + "/Final.loader.js";
+    const config = {
+        dataUrl: buildUrl + "/Final.data.unityweb",
+        frameworkUrl: buildUrl + "/Final.framework.js.unityweb",
+        codeUrl: buildUrl + "/Final.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "SteelRaven7",
+        productName: "Ravenfield",
+        productVersion: "1.0"
+    };
+
+    const container = document.querySelector("#unity-container");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingCover = document.querySelector("#loading-cover");
+    const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+    const progressBarFull = document.querySelector("#unity-progress-bar-full");
+    const spinner = document.querySelector('.spinner');
+
+    const script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+            progressBarFull.style.width = `${100 * progress}%`;
+        }).then(() => {
+            loadingCover.style.display = "none";
+        }).catch((message) => {
+            console.error(message);
+        });
+    };
+    document.body.appendChild(script);
+</script>
+</body>
+</html>
+
+]]></Content>
+</Module>
